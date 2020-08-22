@@ -46,7 +46,7 @@ class GeneralRecyclerAdapter(private val context: Context,
 
         private var recyclerView : RecyclerView? = null
         private var linearLayoutManager: LinearLayoutManager
-        private var currentDegree = 0
+        private var currentDegree = 0f
 
         init {
             recyclerView = itemView.findViewById(R.id.recyclerCategories)
@@ -66,11 +66,15 @@ class GeneralRecyclerAdapter(private val context: Context,
             })
         }
 
-        fun getVisibleItems() : MutableList<View> {
-            var list = mutableListOf<View>()
-            val firstIndex = linearLayoutManager.findFirstVisibleItemPosition()
-            val lastIndex = linearLayoutManager.findLastVisibleItemPosition()
-            for (position in firstIndex..lastIndex) {
+        fun getVisibleItems(count: Int) : MutableList<View> {
+            val list = mutableListOf<View>()
+
+            /////////// linearLayoutManager.findFirstVisibleItemPosition() --- not working correctly ...
+            //val firstIndex = linearLayoutManager.findFirstVisibleItemPosition()
+            //val lastIndex = linearLayoutManager.findLastVisibleItemPosition()
+            //for (position in firstIndex..lastIndex) {
+
+            for (position in 0..count) {
                 recyclerView?.getChildAt(position)?.let {
                     list.add(it)
                 }
@@ -94,17 +98,17 @@ class GeneralRecyclerAdapter(private val context: Context,
             if (dx == 0)
                 return
 
-            getVisibleItems().forEach{
+            getVisibleItems(categoriesRecyclerAdapter.itemCount).forEach{
                 val categoryImage = it.findViewById<ImageView>(R.id.ivCategoryImage)
-                var degree: Int = 0
+                var degree = 0f
                 if (dx > 0){
-                    degree = 1
+                    degree = 0.1f
                 } else if (dx < 0){
-                    degree = -1
+                    degree = -0.1f
                 }
 
                 currentDegree += degree
-                rotateImage(categoryImage, (currentDegree + degree).toFloat())
+                rotateImage(categoryImage, currentDegree + degree)
             }
 
 
@@ -237,12 +241,16 @@ class GeneralRecyclerAdapter(private val context: Context,
     }
 
     fun setCategories(categoriesData: MutableList<CategoryData>) {
-        val lst = categoriesData.toMutableList()
+        /*val lst = categoriesData.toMutableList()
         categoriesData.addAll(lst)
         categoriesData.addAll(lst)
         categoriesData.addAll(lst)
         categoriesData.addAll(lst)
-        categoriesData.addAll(lst)
+        categoriesData.addAll(lst)*/
+
+        // qani vor yndameny 2 item a galis normal chi erevum, dra hamar es verevi commenty karaq baceq nayenq vonc a stacvel...
+        // karcum em sranic lav dzev mekel duq kaseq :D
+
         this.categoriesData = categoriesData
         notifyDataSetChanged()
     }
